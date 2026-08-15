@@ -69,3 +69,14 @@ Firebase Web configuration is intentionally client-visible in a static web appli
 - Draw/discard use a strict portrait card ratio instead of inheriting square-ish container geometry.
 - Discard shows up to two actual previous discarded cards behind the current top card for a natural played-card stack.
 - Draw pile includes subtle layered card backs.
+
+## v7.0 — full game-feel pass
+
+- Reworked the table into a physical arena with player seats, felt depth, color markers and a stronger active-turn hierarchy.
+- Opponent cards now sit in a compact fan instead of a flat browser-like strip.
+- Added a short non-blocking `YOUR MOVE` banner when control passes to the local player.
+- Added card lift/drop feedback, richer draw/play sounds, dedicated +2/+4 impacts, Wild sweep, turn chime, UNO sting and win/lose fanfares.
+- Ambient music remains optional and is generated in-browser; no external copyrighted audio assets are bundled.
+- Browsers that expose the Vibration API receive subtle tactile feedback for key actions.
+- Home and lobby screens now behave more like a title/versus flow and include menu sound feedback.
+- UNO button, player dock, quick-chat control and winner modal were restyled to feel like physical game controls instead of web UI widgets.

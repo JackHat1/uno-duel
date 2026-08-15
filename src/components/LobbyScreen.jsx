@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import AppIcon from './AppIcon'
 import { getPlayerAvatar, getPlayerGradient } from '../lib/playerVisuals'
+import { playMenuSound } from '../hooks/useGameAudio'
 
 function fallbackCopy(text) {
   const textarea = document.createElement('textarea')
@@ -33,6 +34,7 @@ export default function LobbyScreen({
   const ready = Boolean(room.players?.p1 && room.players?.p2)
 
   const copyCode = async () => {
+    playMenuSound('tap')
     try {
       if (navigator.clipboard?.writeText) await navigator.clipboard.writeText(roomCode)
       else fallbackCopy(roomCode)
@@ -46,6 +48,7 @@ export default function LobbyScreen({
   }
 
   const shareRoom = async () => {
+    playMenuSound('chatOpen')
     const text = `Join my UNO room: ${roomCode}`
     if (navigator.share) {
       try {
@@ -59,7 +62,7 @@ export default function LobbyScreen({
   }
 
   return (
-    <main className="lobby-screen safe-screen premium-lobby-screen">
+    <main className="lobby-screen safe-screen premium-lobby-screen v7-lobby-screen">
       <div className="ambient-grid" aria-hidden="true" />
       <div className="ambient-orb orb-one" aria-hidden="true" />
       <div className="ambient-orb orb-two" aria-hidden="true" />
@@ -67,10 +70,10 @@ export default function LobbyScreen({
       <header className="lobby-topbar premium-shell-width">
         <div className="mini-brand-lockup"><span className="mini-brand-symbol">U</span><div><strong>UNO DUEL</strong><small>LOBBY</small></div></div>
         <div className="topbar-actions">
-          <button className="clean-icon-button premium-control" type="button" onClick={onToggleTheme} aria-label="Toggle theme">
+          <button className="clean-icon-button premium-control" type="button" onClick={() => { playMenuSound('tap'); onToggleTheme() }} aria-label="Toggle theme">
             <AppIcon name={theme === 'dark' ? 'sun' : 'moon'} />
           </button>
-          <button className="profile-avatar-button" type="button" onClick={onOpenProfile} aria-label="Edit player profile">
+          <button className="profile-avatar-button" type="button" onClick={() => { playMenuSound('tap'); onOpenProfile() }} aria-label="Edit player profile">
             <span style={{ background: getPlayerGradient(me) }}>{getPlayerAvatar(me)}</span>
           </button>
         </div>
@@ -87,7 +90,8 @@ export default function LobbyScreen({
           <span className="copy-code-action"><AppIcon name="copy" size={18} /> {copied ? 'COPIED' : 'COPY'}</span>
         </button>
 
-        <div className="duel-player-list">
+        <div className="duel-player-list v7-duel-player-list">
+          <span className="v7-versus-mark" aria-hidden="true">VS</span>
           {[room.players?.p1, room.players?.p2].map((player, index) => (
             <div className={`duel-player-row ${player ? 'is-ready' : ''}`} key={player?.uid || `slot-${index}`}>
               <span className="duel-player-avatar" style={{ background: getPlayerGradient(player || { name: 'Waiting' }) }}>
@@ -110,7 +114,7 @@ export default function LobbyScreen({
         )}
 
         {ready && isHost && (
-          <button className="premium-primary-button lobby-start-button" onClick={onStart} disabled={busy} type="button">
+          <button className="premium-primary-button lobby-start-button" onClick={() => { playMenuSound('start'); onStart() }} disabled={busy} type="button">
             <span className="button-copy"><small>PLAYERS READY</small><strong>{busy ? 'Starting…' : 'Start match'}</strong></span>
             <span className="button-arrow"><AppIcon name="arrow" /></span>
           </button>
@@ -122,7 +126,7 @@ export default function LobbyScreen({
 
         {error && <div className="error-banner premium-error" role="alert">{error}</div>}
 
-        <button className="premium-text-button danger-text" onClick={onLeave} disabled={busy} type="button">Leave room</button>
+        <button className="premium-text-button danger-text" onClick={() => { playMenuSound('tap'); onLeave() }} disabled={busy} type="button">Leave room</button>
       </section>
     </main>
   )

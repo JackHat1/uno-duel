@@ -49,12 +49,14 @@ export default function GameBoard({
   const [pendingWild, setPendingWild] = useState(null)
   const [settingsOpen, setSettingsOpen] = useState(false)
   const [momentEvent, setMomentEvent] = useState(null)
+  const [turnFlash, setTurnFlash] = useState(false)
   const seenGameEventRef = useRef(null)
   const handZoneRef = useRef(null)
   const [handZoneWidth, setHandZoneWidth] = useState(0)
   const viewport = useIOSViewport()
 
   const game = room.game
+  const previousTurnRef = useRef(game?.currentTurnUid || null)
 
   const me = room.players?.p1?.uid === uid ? room.players.p1 : room.players.p2
   const opponent = room.players?.p1?.uid === uid ? room.players.p2 : room.players.p1
@@ -131,6 +133,19 @@ export default function GameBoard({
 
 
   useEffect(() => {
+    const previousTurn = previousTurnRef.current
+    const nextTurn = game?.currentTurnUid || null
+    previousTurnRef.current = nextTurn
+
+    if (previousTurn && previousTurn !== nextTurn && nextTurn === uid && game?.phase === 'playing') {
+      setTurnFlash(true)
+      const timer = window.setTimeout(() => setTurnFlash(false), 920)
+      return () => window.clearTimeout(timer)
+    }
+    return undefined
+  }, [game?.currentTurnUid, game?.phase, uid])
+
+  useEffect(() => {
     const node = handZoneRef.current
     if (!node) return undefined
 
@@ -153,7 +168,7 @@ export default function GameBoard({
 
 
   const viewportMode = viewport.height < 620 ? 'tiny' : viewport.height < 700 ? 'short' : viewport.height < 780 ? 'compact' : 'full'
-  const boardClassName = `game-screen polished-game-screen premium-game-board ios-board ios-${viewportMode} v6-game-board v6-color-${game?.currentColor || 'red'}`
+  const boardClassName = `game-screen polished-game-screen premium-game-board ios-board ios-${viewportMode} v6-game-board v7-game-board v6-color-${game?.currentColor || 'red'} ${momentEvent ? `is-event-${momentEvent.type}` : ''}`
   const boardStyle = {
     '--board-vw': `${viewport.width}px`,
     '--board-vh': `${viewport.height}px`,
@@ -190,11 +205,11 @@ export default function GameBoard({
     if (busy) return
     primeAudio()
     if (card.type === 'wild' || card.type === 'wild4') {
-      playSound('tap')
+      playSound('cardLift')
       setPendingWild(card)
       return
     }
-    playSound('tap')
+    playSound('cardLift')
     onPlayCard(card.id)
   }
 
@@ -266,7 +281,7 @@ export default function GameBoard({
           <button className="clean-icon-button game-control-button profile-game-button" type="button" onClick={onOpenProfile} aria-label="Edit player account" title="Player account">
             <span className="game-profile-avatar" style={{ background: getPlayerGradient(me) }}>{getPlayerAvatar(me)}</span>
           </button>
-          <button className="clean-icon-button game-control-button ios-menu-button" type="button" onClick={() => setSettingsOpen(true)} aria-label="Open game settings" title="Game settings">
+          <button className="clean-icon-button game-control-button ios-menu-button" type="button" onClick={() => { playSound('tap'); setSettingsOpen(true) }} aria-label="Open game settings" title="Game settings">
             <AppIcon name="settings" />
           </button>
         </div>
@@ -282,8 +297,14 @@ export default function GameBoard({
         </div>
 
         <div className="opponent-hand" aria-label={`${opponentHand.length} opponent cards`}>
-          {Array.from({ length: Math.min(opponentHand.length, 9) }).map((_, index) => (
-            <CardBack mini key={index} />
+          {Array.from({ length: Math.min(opponentHand.length, 9) }).map((_, index, cards) => (
+            <span
+              className="opponent-card-fan-item"
+              key={index}
+              style={{ '--opp-index': index, '--opp-count': cards.length }}
+            >
+              <CardBack mini />
+            </span>
           ))}
           {opponentHand.length > 9 && <span className="more-cards">+{opponentHand.length - 9}</span>}
         </div>
@@ -299,7 +320,8 @@ export default function GameBoard({
               : `${opponent?.name || 'Opponent'}'S TURN`}
         </div>
 
-        <div className="center-table-card glass-center-table v6-table-stage">
+        <div className="v7-arena-rim" aria-hidden="true"><i /><i /><i /><i /></div>
+        <div className="center-table-card glass-center-table v6-table-stage v7-table-stage">
           <div className={`v6-discard-aura aura-${game.currentColor}`} aria-hidden="true" />
           <div className="piles-row">
             <button
@@ -430,11 +452,19 @@ export default function GameBoard({
                 left={handFanLayout.startX + index * handFanLayout.step}
                 zIndex={index + 1}
                 onPlay={tapCard}
+                onGrab={() => playSound('cardLift')}
               />
             )
           })}
         </div>
       </section>
+
+      {turnFlash && (
+        <div className="v7-turn-flash" aria-hidden="true">
+          <span>YOUR MOVE</span>
+          <i>PLAY A CARD</i>
+        </div>
+      )}
 
       <GameMomentOverlay key={momentEvent?.id || 'no-moment'} event={momentEvent} uid={uid} onDone={() => setMomentEvent(null)} />
 
@@ -446,6 +476,8 @@ export default function GameBoard({
         busy={busy}
         onSend={onSendQuickMessage}
         onIncoming={() => playSound('chat')}
+        onTap={() => playSound('chatOpen')}
+        onSendSound={() => playSound('chat')}
       />
 
       <GameSettingsSheet
@@ -458,6 +490,7 @@ export default function GameBoard({
         musicEnabled={musicEnabled}
         onToggleMusic={toggleMusicEnabled}
         onLeave={handleLeave}
+        onUiSound={() => playSound('tap')}
         busy={busy}
       />
 
@@ -469,7 +502,8 @@ export default function GameBoard({
 
       {game.phase === 'finished' && (
         <div className="modal-backdrop winner-backdrop">
-          <section className="winner-modal" role="dialog" aria-modal="true">
+          <section className="winner-modal v7-winner-modal" role="dialog" aria-modal="true">
+            <div className="v7-winner-confetti" aria-hidden="true">{Array.from({ length: 14 }).map((_, index) => <i key={index} style={{ '--confetti-index': index }} />)}</div>
             <div className="winner-crown">★</div>
             <p className="eyebrow">{matchWinner ? 'MATCH COMPLETE' : `ROUND ${roundNumber} COMPLETE`}</p>
             <h2>{winner?.uid === uid ? (matchWinner ? 'Champion! 🏆' : 'You win!') : `${winner?.name || 'Opponent'} wins!`}</h2>

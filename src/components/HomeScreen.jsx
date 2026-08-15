@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import AppIcon from './AppIcon'
 import { getAccentGradient } from '../lib/playerVisuals'
+import { playMenuSound } from '../hooks/useGameAudio'
 
 export default function HomeScreen({
   onCreate,
@@ -17,11 +18,12 @@ export default function HomeScreen({
   const submitJoin = async (event) => {
     event.preventDefault()
     if (roomCode.length !== 4) return
+    playMenuSound('turn')
     await onJoin(roomCode)
   }
 
   return (
-    <main className="home-screen safe-screen premium-home-screen">
+    <main className="home-screen safe-screen premium-home-screen v7-home-screen">
       <div className="ambient-grid" aria-hidden="true" />
       <div className="ambient-orb orb-one" aria-hidden="true" />
       <div className="ambient-orb orb-two" aria-hidden="true" />
@@ -33,10 +35,10 @@ export default function HomeScreen({
           <div><strong>UNO DUEL</strong><small>REALTIME</small></div>
         </div>
         <div className="home-header-actions">
-          <button className="clean-icon-button premium-control" type="button" onClick={onToggleTheme} aria-label="Toggle theme">
+          <button className="clean-icon-button premium-control" type="button" onClick={() => { playMenuSound('tap'); onToggleTheme() }} aria-label="Toggle theme">
             <AppIcon name={theme === 'dark' ? 'sun' : 'moon'} />
           </button>
-          <button className="clean-profile-button" type="button" onClick={onOpenProfile}>
+          <button className="clean-profile-button" type="button" onClick={() => { playMenuSound('tap'); onOpenProfile() }}>
             <span className="header-profile-avatar" style={{ background: getAccentGradient(profile?.accent) }}>{profile?.avatar}</span>
             <span className="header-profile-copy"><small>PLAYER</small><strong>{profile?.name || 'Player'}</strong></span>
             <AppIcon name="edit" size={16} />
@@ -44,7 +46,8 @@ export default function HomeScreen({
         </div>
       </header>
 
-      <section className="premium-home-card premium-shell-width">
+      <section className="premium-home-card premium-shell-width v7-home-card">
+        <div className="v7-home-card-fan" aria-hidden="true"><i>U</i><i>N</i><i>O</i></div>
         <div className="hero-lockup">
           <div className="hero-logo-wrap">
             <div className="hero-logo-shadow" />
@@ -56,7 +59,7 @@ export default function HomeScreen({
         </div>
 
         <div className="home-action-stack">
-          <button className="premium-primary-button create-room-premium" type="button" onClick={onCreate} disabled={busy}>
+          <button className="premium-primary-button create-room-premium" type="button" onClick={() => { playMenuSound('start'); onCreate() }} disabled={busy}>
             <span className="button-copy"><small>START A NEW MATCH</small><strong>{busy ? 'Connecting…' : 'Create room'}</strong></span>
             <span className="button-arrow"><AppIcon name="arrow" /></span>
           </button>

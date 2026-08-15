@@ -3,7 +3,7 @@ import { QUICK_MESSAGES } from '../services/chatService'
 import { getPlayerAvatar } from '../lib/playerVisuals'
 import AppIcon from './AppIcon'
 
-export default function QuickChat({ latestMessage, uid, me, opponent, busy, onSend, onIncoming }) {
+export default function QuickChat({ latestMessage, uid, me, opponent, busy, onSend, onIncoming, onTap, onSendSound }) {
   const [open, setOpen] = useState(false)
   const [visibleMessage, setVisibleMessage] = useState(null)
   const lastMessageId = useRef(null)
@@ -51,6 +51,7 @@ export default function QuickChat({ latestMessage, uid, me, opponent, busy, onSe
   const suggestions = useMemo(() => QUICK_MESSAGES, [])
 
   const send = async (text) => {
+    onSendSound?.()
     const ok = await onSend(text)
     if (ok !== null) setOpen(false)
   }
@@ -71,7 +72,7 @@ export default function QuickChat({ latestMessage, uid, me, opponent, busy, onSe
         ref={buttonRef}
         className={`quick-chat-fab quick-chat-fab-mini ${open ? 'is-open' : ''}`}
         type="button"
-        onClick={() => setOpen((current) => !current)}
+        onClick={() => { onTap?.(); setOpen((current) => !current) }}
         aria-label="Quick chat"
       >
         <AppIcon name="chat" size={18} />
