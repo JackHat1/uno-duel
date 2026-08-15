@@ -18,7 +18,6 @@ export default function SwipeHandCard({
   left = 0,
   zIndex = 1,
   onPlay,
-  onGrab,
 }) {
   const slotRef = useRef(null)
   const startRef = useRef(null)
@@ -61,7 +60,6 @@ export default function SwipeHandCard({
     movedRef.current = false
     suppressClickRef.current = false
     setDragging(true)
-    onGrab?.(card)
     slotRef.current?.setPointerCapture?.(event.pointerId)
     setDragTransform(0, 0, true)
   }
