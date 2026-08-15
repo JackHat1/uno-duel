@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
+import { createPortal } from 'react-dom'
 import { QUICK_MESSAGES } from '../services/chatService'
 import { getPlayerAvatar } from '../lib/playerVisuals'
 import AppIcon from './AppIcon'
@@ -6,9 +7,14 @@ import AppIcon from './AppIcon'
 export default function QuickChat({ latestMessage, uid, me, opponent, busy, onSend, onIncoming, onTap, onSendSound }) {
   const [open, setOpen] = useState(false)
   const [visibleMessage, setVisibleMessage] = useState(null)
+  const [portalReady, setPortalReady] = useState(false)
   const lastMessageId = useRef(null)
   const popoverRef = useRef(null)
   const buttonRef = useRef(null)
+
+  useEffect(() => {
+    setPortalReady(typeof document !== 'undefined')
+  }, [])
 
   useEffect(() => {
     if (!latestMessage?.id || latestMessage.id === lastMessageId.current) return
@@ -29,9 +35,7 @@ export default function QuickChat({ latestMessage, uid, me, opponent, busy, onSe
 
     const handlePointerDown = (event) => {
       const target = event.target
-      if (popoverRef.current?.contains(target) || buttonRef.current?.contains(target)) {
-        return
-      }
+      if (popoverRef.current?.contains(target) || buttonRef.current?.contains(target)) return
       setOpen(false)
     }
 
@@ -56,7 +60,7 @@ export default function QuickChat({ latestMessage, uid, me, opponent, busy, onSe
     if (ok !== null) setOpen(false)
   }
 
-  return (
+  const ui = (
     <>
       {visibleMessage && (
         <div className={`chat-bubble-pop ${visibleMessage.senderUid === uid ? 'chat-bubble-me' : 'chat-bubble-opponent'}`}>
@@ -103,4 +107,7 @@ export default function QuickChat({ latestMessage, uid, me, opponent, busy, onSe
       )}
     </>
   )
+
+  if (!portalReady) return null
+  return createPortal(ui, document.body)
 }
