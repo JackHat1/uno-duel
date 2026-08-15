@@ -61,3 +61,11 @@ Do not treat the current development Realtime Database rules as production anti-
 ## Public repository note
 
 Firebase Web configuration is intentionally client-visible in a static web application. Access control must come from Firebase Authentication, Realtime Database Security Rules and (for a public deployment) App Check / stronger server-side validation where appropriate.
+
+
+## v6.4 — Compact chat + real center piles
+
+- Quick Chat trigger is now a small icon-only circular control with a much smaller popover.
+- Draw/discard use a strict portrait card ratio instead of inheriting square-ish container geometry.
+- Discard shows up to two actual previous discarded cards behind the current top card for a natural played-card stack.
+- Draw pile includes subtle layered card backs.

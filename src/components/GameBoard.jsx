@@ -66,7 +66,9 @@ export default function GameBoard({
     [game?.hands, opponent?.uid],
   )
   const deck = useMemo(() => toArray(game?.deck), [game?.deck])
-  const topCard = getTopCard({ discard: toArray(game?.discard) })
+  const discardCards = toArray(game?.discard)
+  const topCard = getTopCard({ discard: discardCards })
+  const previousDiscardCards = discardCards.slice(-3, -1)
 
   const isMyTurn = game?.currentTurnUid === uid && game?.phase === 'playing'
   const canCallUno =
@@ -307,12 +309,29 @@ export default function GameBoard({
               disabled={!isMyTurn || busy || Boolean(game.drawnCardId)}
               aria-label={`Draw pile, ${deck.length} cards`}
             >
-              <CardBack />
+              <span className="draw-stack-visual" aria-hidden="true">
+                <span className="draw-shadow-card draw-shadow-card-back" />
+                <span className="draw-shadow-card draw-shadow-card-mid" />
+                <CardBack />
+              </span>
               <span className="pile-caption">DRAW · {deck.length}</span>
             </button>
 
             <div className="discard-stack" aria-label="Discard pile">
-              <UnoCard key={topCard?.id} card={topCard} playable={false} />
+              <div className="discard-stack-visual">
+                {previousDiscardCards.map((card, index) => (
+                  <div
+                    key={card.id}
+                    className={`discard-history-card discard-history-${index}`}
+                    aria-hidden="true"
+                  >
+                    <UnoCard card={card} playable={false} />
+                  </div>
+                ))}
+                <div className="discard-top-card">
+                  <UnoCard key={topCard?.id} card={topCard} playable={false} />
+                </div>
+              </div>
               <span className="pile-caption">DISCARD</span>
             </div>
           </div>

@@ -2746,3 +2746,439 @@ html[data-theme="light"] .accent-choice { background: rgba(24,70,45,.04); border
     padding-block: 3px;
   }
 }
+
+/* =====================================================================
+   v6.4 — compact chat button + proper center card stacks
+   ===================================================================== */
+
+/* Small icon-only chat button + compact popover. */
+.quick-chat-backdrop,
+.quick-chat-sheet {
+  display: none !important;
+}
+
+.quick-chat-fab.quick-chat-fab-mini {
+  width: 40px;
+  min-width: 40px;
+  height: 40px;
+  padding: 0;
+  border-radius: 999px;
+  gap: 0;
+  justify-content: center;
+  background: linear-gradient(180deg, rgba(19,30,24,.96), rgba(9,17,13,.96));
+  border: 1px solid rgba(255,255,255,.1);
+  box-shadow: 0 10px 24px rgba(0,0,0,.28), inset 0 1px 0 rgba(255,255,255,.08);
+}
+
+.quick-chat-fab.quick-chat-fab-mini .quick-chat-fab-label {
+  display: none;
+}
+
+.quick-chat-popover {
+  position: fixed;
+  right: calc(max(10px, env(safe-area-inset-right)) + 2px);
+  bottom: calc(max(10px, env(safe-area-inset-bottom)) + 48px);
+  width: min(248px, calc(100vw - 18px));
+  max-height: min(250px, 38vh);
+  overflow: auto;
+  z-index: 320;
+  border-radius: 16px;
+  padding: 8px;
+  border: 1px solid rgba(255,255,255,.1);
+  background: rgba(8,15,11,.97);
+  box-shadow: 0 20px 48px rgba(0,0,0,.42), inset 0 1px 0 rgba(255,255,255,.05);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  -webkit-overflow-scrolling: touch;
+}
+
+.compact-chat-header {
+  min-height: 30px;
+  margin-bottom: 6px;
+}
+
+.compact-chat-header span {
+  font-size: 7px;
+}
+
+.compact-chat-header strong {
+  font-size: 12px;
+  margin-top: 1px;
+}
+
+.compact-message-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 5px;
+  margin-top: 0;
+}
+
+.compact-message-grid button {
+  min-height: 34px;
+  border-radius: 10px;
+  padding: 5px 6px;
+  font-size: 9px;
+  line-height: 1.12;
+}
+
+.chat-bubble-pop {
+  max-width: min(210px, 58vw);
+}
+
+/* Center piles as real UNO stacks, not square blocks. */
+.draw-stack,
+.discard-stack {
+  position: relative;
+  width: 100px;
+  align-items: center;
+  justify-content: center;
+}
+
+.draw-stack::before,
+.draw-stack::after,
+.discard-stack::before,
+.discard-stack::after {
+  content: '';
+  position: absolute;
+  width: 92px;
+  height: 132px;
+  border-radius: 14px;
+  border: 4px solid rgba(255,255,255,.18);
+  background: rgba(255,255,255,.05);
+  box-shadow: 0 10px 22px rgba(0,0,0,.18);
+  z-index: 0;
+  pointer-events: none;
+}
+
+.draw-stack::before {
+  transform: translate(-8px, 4px) rotate(-7deg);
+  opacity: .82;
+}
+
+.draw-stack::after {
+  transform: translate(-4px, 2px) rotate(-3deg);
+  opacity: .92;
+}
+
+.discard-stack::before {
+  transform: translate(7px, 4px) rotate(6deg);
+  opacity: .68;
+}
+
+.discard-stack::after {
+  transform: translate(3px, 2px) rotate(3deg);
+  opacity: .84;
+}
+
+.draw-stack .card-back,
+.discard-stack .uno-card {
+  position: relative;
+  z-index: 2;
+  width: 92px;
+  height: 132px;
+  flex-basis: 92px;
+  border-width: 4px;
+  border-radius: 14px;
+}
+
+.draw-stack .card-back {
+  background: linear-gradient(145deg, #131313, #272727);
+}
+
+.draw-stack .card-back span {
+  font-size: 22px;
+}
+
+.discard-stack .uno-card {
+  filter: drop-shadow(0 12px 20px rgba(0,0,0,.24));
+}
+
+.pile-caption {
+  position: relative;
+  z-index: 3;
+}
+
+.ios-compact .quick-chat-fab.quick-chat-fab-mini {
+  width: 38px;
+  min-width: 38px;
+  height: 38px;
+}
+
+.ios-compact .quick-chat-popover {
+  width: min(236px, calc(100vw - 16px));
+  bottom: calc(max(9px, env(safe-area-inset-bottom)) + 46px);
+}
+
+.ios-compact .draw-stack,
+.ios-compact .discard-stack {
+  width: 88px;
+}
+
+.ios-compact .draw-stack::before,
+.ios-compact .draw-stack::after,
+.ios-compact .discard-stack::before,
+.ios-compact .discard-stack::after,
+.ios-compact .draw-stack .card-back,
+.ios-compact .discard-stack .uno-card {
+  width: 82px;
+  height: 118px;
+  border-radius: 13px;
+}
+
+.ios-short .quick-chat-fab.quick-chat-fab-mini {
+  width: 36px;
+  min-width: 36px;
+  height: 36px;
+}
+
+.ios-short .quick-chat-popover {
+  width: min(220px, calc(100vw - 14px));
+  max-height: min(214px, 34vh);
+}
+
+.ios-short .draw-stack,
+.ios-short .discard-stack {
+  width: 76px;
+}
+
+.ios-short .draw-stack::before,
+.ios-short .draw-stack::after,
+.ios-short .discard-stack::before,
+.ios-short .discard-stack::after,
+.ios-short .draw-stack .card-back,
+.ios-short .discard-stack .uno-card {
+  width: 70px;
+  height: 101px;
+  border-radius: 11px;
+  border-width: 3px;
+}
+
+.ios-tiny .quick-chat-fab.quick-chat-fab-mini {
+  width: 34px;
+  min-width: 34px;
+  height: 34px;
+}
+
+.ios-tiny .quick-chat-popover {
+  width: min(204px, calc(100vw - 12px));
+  max-height: min(190px, 30vh);
+  padding: 7px;
+}
+
+.ios-tiny .compact-message-grid button {
+  min-height: 30px;
+  font-size: 8px;
+}
+
+.ios-tiny .draw-stack,
+.ios-tiny .discard-stack {
+  width: 64px;
+}
+
+.ios-tiny .draw-stack::before,
+.ios-tiny .draw-stack::after,
+.ios-tiny .discard-stack::before,
+.ios-tiny .discard-stack::after,
+.ios-tiny .draw-stack .card-back,
+.ios-tiny .discard-stack .uno-card {
+  width: 58px;
+  height: 84px;
+  border-radius: 9px;
+  border-width: 3px;
+}
+
+/* =====================================================================
+   v6.4b — final compact chat + real discard history stack
+   ===================================================================== */
+
+/* Chat trigger: deliberately tiny and icon-only. */
+.quick-chat-fab.quick-chat-fab-mini {
+  width: 34px !important;
+  min-width: 34px !important;
+  height: 34px !important;
+  padding: 0 !important;
+  border-radius: 50% !important;
+  right: max(8px, env(safe-area-inset-right)) !important;
+  bottom: calc(max(8px, env(safe-area-inset-bottom)) + 94px) !important;
+  background: rgba(7,14,10,.92) !important;
+  border: 1px solid rgba(255,255,255,.11) !important;
+  box-shadow: 0 7px 18px rgba(0,0,0,.28) !important;
+}
+
+.quick-chat-fab.quick-chat-fab-mini svg {
+  width: 16px !important;
+  height: 16px !important;
+}
+
+.quick-chat-popover {
+  right: max(8px, env(safe-area-inset-right)) !important;
+  bottom: calc(max(8px, env(safe-area-inset-bottom)) + 134px) !important;
+  width: min(214px, calc(100vw - 16px)) !important;
+  max-height: min(196px, 32vh) !important;
+  padding: 7px !important;
+  border-radius: 14px !important;
+}
+
+.quick-chat-popover .compact-chat-header {
+  min-height: 26px !important;
+  margin-bottom: 4px !important;
+}
+
+.quick-chat-popover .compact-chat-header span { font-size: 6px !important; }
+.quick-chat-popover .compact-chat-header strong { font-size: 10px !important; }
+.quick-chat-popover .quick-chat-close { width: 26px !important; height: 26px !important; }
+
+.quick-chat-popover .compact-message-grid {
+  grid-template-columns: repeat(2, minmax(0,1fr)) !important;
+  gap: 4px !important;
+}
+
+.quick-chat-popover .compact-message-grid button {
+  min-height: 29px !important;
+  padding: 4px 5px !important;
+  border-radius: 9px !important;
+  font-size: 8px !important;
+}
+
+/* Real portrait card geometry for the two center piles. */
+.draw-stack,
+.discard-stack {
+  width: 100px !important;
+}
+
+.draw-stack::before,
+.draw-stack::after,
+.discard-stack::before,
+.discard-stack::after {
+  display: none !important;
+}
+
+.draw-stack-visual,
+.discard-stack-visual {
+  position: relative;
+  display: block;
+  width: 92px;
+  height: 132px;
+  flex: 0 0 auto;
+}
+
+.draw-stack-visual .card-back,
+.discard-stack-visual .uno-card {
+  position: absolute !important;
+  inset: 0 !important;
+  width: 92px !important;
+  height: 132px !important;
+  min-width: 92px !important;
+  min-height: 132px !important;
+  max-width: 92px !important;
+  max-height: 132px !important;
+  aspect-ratio: 92 / 132 !important;
+  flex-basis: auto !important;
+  border-radius: 14px !important;
+  box-sizing: border-box !important;
+}
+
+.draw-shadow-card {
+  position: absolute;
+  inset: 0;
+  width: 92px;
+  height: 132px;
+  border: 3px solid rgba(255,255,255,.65);
+  border-radius: 14px;
+  background:
+    radial-gradient(ellipse at center, #b80e17 0 46%, transparent 47%),
+    repeating-linear-gradient(45deg, #101312 0 5px, #222625 5px 10px);
+  box-shadow: 0 8px 17px rgba(0,0,0,.22);
+}
+
+.draw-shadow-card-back { transform: translate(-6px,3px) rotate(-5deg); opacity: .58; }
+.draw-shadow-card-mid { transform: translate(-3px,2px) rotate(-2.5deg); opacity: .78; }
+.draw-stack-visual .card-back { z-index: 3; }
+
+.discard-history-card,
+.discard-top-card {
+  position: absolute;
+  inset: 0;
+  width: 92px;
+  height: 132px;
+  transform-origin: 50% 70%;
+}
+
+.discard-history-card .uno-card {
+  opacity: 1 !important;
+  filter: saturate(.88) brightness(.82) !important;
+  box-shadow: 0 7px 15px rgba(0,0,0,.20) !important;
+}
+
+.discard-history-0 {
+  z-index: 1;
+  transform: translate(7px,4px) rotate(7deg);
+}
+
+.discard-history-1 {
+  z-index: 2;
+  transform: translate(-5px,2px) rotate(-4deg);
+}
+
+.discard-top-card {
+  z-index: 4;
+  transform: translateZ(0);
+}
+
+.discard-top-card .uno-card {
+  opacity: 1 !important;
+  filter: none !important;
+  box-shadow: 0 13px 23px rgba(0,0,0,.28) !important;
+}
+
+@media (max-height: 779px) {
+  .draw-stack,
+  .discard-stack { width: 86px !important; }
+  .draw-stack-visual,
+  .discard-stack-visual,
+  .discard-history-card,
+  .discard-top-card { width: 82px; height: 118px; }
+  .draw-shadow-card,
+  .draw-stack-visual .card-back,
+  .discard-stack-visual .uno-card {
+    width: 82px !important;
+    height: 118px !important;
+    min-width: 82px !important;
+    min-height: 118px !important;
+    max-width: 82px !important;
+    max-height: 118px !important;
+    aspect-ratio: 82 / 118 !important;
+    border-radius: 13px !important;
+  }
+}
+
+@media (max-height: 699px) {
+  .quick-chat-fab.quick-chat-fab-mini {
+    width: 31px !important;
+    min-width: 31px !important;
+    height: 31px !important;
+    bottom: calc(max(7px, env(safe-area-inset-bottom)) + 80px) !important;
+  }
+  .quick-chat-popover {
+    bottom: calc(max(7px, env(safe-area-inset-bottom)) + 116px) !important;
+    width: min(202px, calc(100vw - 14px)) !important;
+    max-height: 176px !important;
+  }
+  .draw-stack,
+  .discard-stack { width: 74px !important; }
+  .draw-stack-visual,
+  .discard-stack-visual,
+  .discard-history-card,
+  .discard-top-card { width: 70px; height: 101px; }
+  .draw-shadow-card,
+  .draw-stack-visual .card-back,
+  .discard-stack-visual .uno-card {
+    width: 70px !important;
+    height: 101px !important;
+    min-width: 70px !important;
+    min-height: 101px !important;
+    max-width: 70px !important;
+    max-height: 101px !important;
+    aspect-ratio: 70 / 101 !important;
+    border-radius: 11px !important;
+  }
+}

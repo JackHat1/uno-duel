@@ -7,6 +7,8 @@ export default function QuickChat({ latestMessage, uid, me, opponent, busy, onSe
   const [open, setOpen] = useState(false)
   const [visibleMessage, setVisibleMessage] = useState(null)
   const lastMessageId = useRef(null)
+  const popoverRef = useRef(null)
+  const buttonRef = useRef(null)
 
   useEffect(() => {
     if (!latestMessage?.id || latestMessage.id === lastMessageId.current) return
@@ -21,6 +23,29 @@ export default function QuickChat({ latestMessage, uid, me, opponent, busy, onSe
     const timer = window.setTimeout(() => setVisibleMessage(null), 3300)
     return () => window.clearTimeout(timer)
   }, [latestMessage, onIncoming, uid])
+
+  useEffect(() => {
+    if (!open) return undefined
+
+    const handlePointerDown = (event) => {
+      const target = event.target
+      if (popoverRef.current?.contains(target) || buttonRef.current?.contains(target)) {
+        return
+      }
+      setOpen(false)
+    }
+
+    const handleEscape = (event) => {
+      if (event.key === 'Escape') setOpen(false)
+    }
+
+    document.addEventListener('pointerdown', handlePointerDown)
+    document.addEventListener('keydown', handleEscape)
+    return () => {
+      document.removeEventListener('pointerdown', handlePointerDown)
+      document.removeEventListener('keydown', handleEscape)
+    }
+  }, [open])
 
   const sender = visibleMessage?.senderUid === uid ? me : opponent
   const suggestions = useMemo(() => QUICK_MESSAGES, [])
@@ -43,36 +68,37 @@ export default function QuickChat({ latestMessage, uid, me, opponent, busy, onSe
       )}
 
       <button
-        className={`quick-chat-fab ${open ? 'is-open' : ''}`}
+        ref={buttonRef}
+        className={`quick-chat-fab quick-chat-fab-mini ${open ? 'is-open' : ''}`}
         type="button"
         onClick={() => setOpen((current) => !current)}
         aria-label="Quick chat"
       >
-        <AppIcon name="chat" size={22} />
-        <span className="quick-chat-fab-label">CHAT</span>
+        <AppIcon name="chat" size={18} />
       </button>
 
       {open && (
-        <div className="quick-chat-backdrop" onClick={() => setOpen(false)} role="presentation">
-          <section className="quick-chat-sheet" onClick={(event) => event.stopPropagation()} aria-label="Quick chat">
-            <div className="quick-chat-handle" />
-            <div className="quick-chat-header">
-              <div>
-                <span>QUICK CHAT</span>
-                <strong>Send a fast reaction</strong>
-              </div>
-              <button className="clean-icon-button quick-chat-close" type="button" onClick={() => setOpen(false)} aria-label="Close quick chat"><AppIcon name="close" /></button>
+        <section
+          ref={popoverRef}
+          className="quick-chat-popover"
+          aria-label="Quick chat"
+        >
+          <div className="quick-chat-header compact-chat-header">
+            <div>
+              <span>QUICK CHAT</span>
+              <strong>Send a reaction</strong>
             </div>
+            <button className="clean-icon-button quick-chat-close" type="button" onClick={() => setOpen(false)} aria-label="Close quick chat"><AppIcon name="close" /></button>
+          </div>
 
-            <div className="quick-message-grid">
-              {suggestions.map((message) => (
-                <button key={message} type="button" disabled={busy} onClick={() => send(message)}>
-                  {message}
-                </button>
-              ))}
-            </div>
-          </section>
-        </div>
+          <div className="quick-message-grid compact-message-grid">
+            {suggestions.map((message) => (
+              <button key={message} type="button" disabled={busy} onClick={() => send(message)}>
+                {message}
+              </button>
+            ))}
+          </div>
+        </section>
       )}
     </>
   )
