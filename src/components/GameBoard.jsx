@@ -172,22 +172,28 @@ export default function GameBoard({
   const boardStyle = {
     '--board-vw': `${viewport.width}px`,
     '--board-vh': `${viewport.height}px`,
-    '--board-top': `${viewport.offsetTop || 0}px`,
-    '--board-left': `${viewport.offsetLeft || 0}px`,
   }
 
   const handFanLayout = useMemo(() => {
     const count = Math.max(myHand.length, 1)
-    const compact = viewport.height < 760
-    const veryCompact = viewport.height < 690
+    const tiny = viewport.height < 620
+    const short = viewport.height < 700
+    const compact = viewport.height < 780
 
-    // The hand is positioned explicitly instead of relying on flexbox/scroll width.
-    // This guarantees the first and last card always stay inside the iPhone viewport.
-    const measuredWidth = handZoneWidth > 0 ? handZoneWidth : viewport.width - 18
-    const availableWidth = Math.max(120, measuredWidth - 28)
-    const cardWidth = veryCompact ? 56 : compact ? 64 : Math.min(74, Math.max(66, viewport.width * 0.18))
+    // On iPhone the hand must never be tall enough to push the table below the
+    // visible Safari viewport. Card size is therefore tied to visible height,
+    // while horizontal overlap still adapts to the exact measured hand width.
+    const measuredWidth = handZoneWidth > 0 ? handZoneWidth : viewport.width - 12
+    const availableWidth = Math.max(116, measuredWidth - 14)
+    const cardWidth = tiny
+      ? 44
+      : short
+        ? 50
+        : compact
+          ? 58
+          : Math.min(70, Math.max(62, viewport.width * 0.165))
     const cardHeight = Math.round(cardWidth * 1.435)
-    const naturalStep = cardWidth + 6
+    const naturalStep = cardWidth + 5
     const fittedStep = count > 1 ? (availableWidth - cardWidth) / (count - 1) : 0
     const step = count > 1 ? Math.max(0, Math.min(naturalStep, fittedStep)) : 0
     const totalWidth = count === 1 ? cardWidth : cardWidth + step * (count - 1)
@@ -199,7 +205,7 @@ export default function GameBoard({
       cardHeight,
       step,
       startX,
-      containerHeight: cardHeight + 22,
+      containerHeight: cardHeight + (tiny ? 8 : short ? 10 : compact ? 14 : 18),
     }
   }, [handZoneWidth, myHand.length, viewport.height, viewport.width])
 

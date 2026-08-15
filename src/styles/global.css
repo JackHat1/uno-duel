@@ -4873,145 +4873,375 @@ html[data-theme="light"] .v8-loading-screen {
 
 
 /* =====================================================================
-   v8.1 iPhone in-game viewport fix
-   Keep the live game locked to the actual Safari visible viewport and
-   compress the board more aggressively on short iPhone screens.
+   v8.2 — iPhone game fit + restored classic synced FX
    ===================================================================== */
+
+/* IMPORTANT: fixed-position elements are already attached to Safari's visual
+   viewport. Adding visualViewport.offsetTop/offsetLeft here double-shifts the
+   whole board downward on iPhone when browser chrome is visible. */
 .v8-game-board {
   position: fixed !important;
-  top: var(--board-top, var(--app-vv-top, 0px)) !important;
-  left: var(--board-left, var(--app-vv-left, 0px)) !important;
-  width: var(--board-vw, var(--app-width, 100vw)) !important;
-  height: var(--board-vh, var(--app-height, 100dvh)) !important;
-  max-height: var(--board-vh, var(--app-height, 100dvh)) !important;
+  inset: 0 auto auto 0 !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: var(--board-vw, 100vw) !important;
+  height: var(--board-vh, 100dvh) !important;
+  max-width: none !important;
+  max-height: var(--board-vh, 100dvh) !important;
   margin: 0 !important;
-  padding-top: max(2px, env(safe-area-inset-top)) !important;
-  padding-right: max(6px, env(safe-area-inset-right)) !important;
-  padding-bottom: max(2px, env(safe-area-inset-bottom)) !important;
-  padding-left: max(6px, env(safe-area-inset-left)) !important;
-  gap: clamp(2px, .55vh, 6px) !important;
+  overflow: hidden !important;
+  grid-template-columns: minmax(0, 1fr) !important;
+  grid-template-rows:
+    var(--game-top-row, 38px)
+    var(--game-opponent-row, 52px)
+    minmax(0, 1fr)
+    var(--game-hand-row, 138px) !important;
+  grid-template-areas:
+    "topbar"
+    "opponent"
+    "table"
+    "hand" !important;
+  gap: 2px !important;
+  padding:
+    max(1px, env(safe-area-inset-top))
+    max(5px, env(safe-area-inset-right))
+    max(1px, env(safe-area-inset-bottom))
+    max(5px, env(safe-area-inset-left)) !important;
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
 }
 
+.v8-game-board .game-topbar { grid-area: topbar !important; min-height: 0 !important; height: 100% !important; }
+.v8-game-board .v6-opponent-strip { grid-area: opponent !important; min-height: 0 !important; max-height: none !important; height: 100% !important; }
 .v8-game-board .table-zone {
-  justify-content: flex-start !important;
-  padding-top: 2px !important;
+  grid-area: table !important;
+  min-height: 0 !important;
+  height: 100% !important;
+  overflow: hidden !important;
+  justify-content: center !important;
+  padding: 0 !important;
 }
+.v8-game-board .v6-hand-dock {
+  grid-area: hand !important;
+  min-height: 0 !important;
+  height: 100% !important;
+  overflow: hidden !important;
+  padding: 2px 2px 0 !important;
+}
+
+/* UNO is a floating table control. It must not consume its own grid row. */
+.v8-game-board .v6-player-controls {
+  position: absolute !important;
+  z-index: 25 !important;
+  left: 50% !important;
+  bottom: calc(var(--game-hand-row, 138px) + max(5px, env(safe-area-inset-bottom))) !important;
+  width: auto !important;
+  min-height: 0 !important;
+  padding: 0 !important;
+  transform: translateX(-50%) !important;
+  pointer-events: none !important;
+}
+.v8-game-board .v6-player-controls .uno-button { pointer-events: auto !important; }
 
 .v8-game-board .center-table-card {
-  width: min(100%, 300px) !important;
+  width: min(100%, 286px) !important;
+  max-height: 100% !important;
+  padding: 2px 5px !important;
 }
+.v8-game-board .v6-turn-pill { flex: 0 0 auto; margin: 0 0 1px !important; }
+.v8-game-board .piles-row { flex: 0 0 auto; }
+.v8-game-board .table-meta { flex: 0 0 auto; margin-top: 3px !important; }
+.v8-game-board .game-message { flex: 0 0 auto; min-height: 10px !important; max-height: 12px !important; margin-top: 1px !important; }
+.v8-game-board .hand-fan-fixed { max-width: 100% !important; overflow: visible !important; }
 
-.v8-game-board .draw-stack,
-.v8-game-board .discard-stack {
-  width: 86px !important;
-}
-
-.v8-game-board .draw-stack .card-back,
-.v8-game-board .discard-stack .uno-card {
-  width: 76px !important;
-  height: 110px !important;
-  flex-basis: 76px !important;
-}
-
-.v8-game-board .v6-hand-dock {
-  padding-top: 3px !important;
-  padding-bottom: 2px !important;
-}
-
-.v8-game-board .hand-fan-fixed {
-  max-width: 100% !important;
-}
-
+/* Normal portrait iPhone / compact Safari viewport */
 .ios-compact.v8-game-board {
-  padding-top: max(1px, env(safe-area-inset-top)) !important;
-  padding-bottom: max(1px, env(safe-area-inset-bottom)) !important;
-  gap: 3px !important;
+  --game-top-row: 34px;
+  --game-opponent-row: 46px;
+  --game-hand-row: 119px;
 }
-.ios-compact.v8-game-board .game-topbar { min-height: 36px !important; padding: 1px 2px !important; }
-.ios-compact.v8-game-board .room-mini { min-height: 29px !important; padding: 3px 8px !important; }
-.ios-compact.v8-game-board .match-score { min-width: 82px !important; padding: 2px 9px 3px !important; }
-.ios-compact.v8-game-board .v6-opponent-strip { min-height: 50px !important; padding: 4px 6px !important; }
-.ios-compact.v8-game-board .player-avatar { width: 33px !important; height: 33px !important; font-size: 17px !important; }
+.ios-compact.v8-game-board .room-mini { min-height: 27px !important; padding: 2px 7px !important; }
+.ios-compact.v8-game-board .match-score { min-width: 76px !important; padding: 1px 8px 2px !important; }
+.ios-compact.v8-game-board .match-score strong { font-size: 14px !important; }
+.ios-compact.v8-game-board .game-control-button { width: 29px !important; height: 29px !important; }
+.ios-compact.v8-game-board .game-profile-avatar { width: 22px !important; height: 22px !important; font-size: 12px !important; }
+.ios-compact.v8-game-board .v6-opponent-strip { padding: 2px 5px !important; }
+.ios-compact.v8-game-board .player-avatar { width: 30px !important; height: 30px !important; font-size: 15px !important; }
 .ios-compact.v8-game-board .opponent-info strong { font-size: 10px !important; }
 .ios-compact.v8-game-board .opponent-info span { font-size: 6px !important; }
-.ios-compact.v8-game-board .v6-turn-pill { min-height: 21px !important; margin-bottom: 2px !important; }
-.ios-compact.v8-game-board .center-table-card { width: min(100%, 286px) !important; padding-top: 4px !important; }
-.ios-compact.v8-game-board .piles-row { gap: min(12vw, 34px) !important; }
+.ios-compact.v8-game-board .opponent-card-fan-item .mini-card-back { width: 24px !important; height: 35px !important; }
+.ios-compact.v8-game-board .v6-turn-pill { min-height: 18px !important; font-size: 6px !important; padding: 0 7px !important; }
+.ios-compact.v8-game-board .piles-row { gap: 25px !important; }
 .ios-compact.v8-game-board .draw-stack,
-.ios-compact.v8-game-board .discard-stack { width: 76px !important; gap: 5px !important; }
+.ios-compact.v8-game-board .discard-stack { width: 65px !important; gap: 2px !important; }
 .ios-compact.v8-game-board .draw-stack .card-back,
-.ios-compact.v8-game-board .discard-stack .uno-card { width: 68px !important; height: 98px !important; flex-basis: 68px !important; }
-.ios-compact.v8-game-board .table-meta { margin-top: 4px !important; }
-.ios-compact.v8-game-board .game-message { min-height: 12px !important; margin-top: 2px !important; font-size: 6px !important; }
-.ios-compact.v8-game-board .uno-button { min-width: 66px !important; min-height: 38px !important; font-size: 13px !important; }
-.ios-compact.v8-game-board .v6-hand-dock { padding-top: 2px !important; }
-.ios-compact.v8-game-board .my-hand-header { min-height: 22px !important; }
-.ios-compact.v8-game-board .hand-fan-fixed { margin-top: -1px !important; }
+.ios-compact.v8-game-board .discard-stack .uno-card { width: 58px !important; height: 84px !important; flex-basis: 58px !important; border-width: 3px !important; border-radius: 9px !important; }
+.ios-compact.v8-game-board .pile-caption { margin-top: 2px !important; font-size: 5px !important; }
+.ios-compact.v8-game-board .meta-chip { min-height: 19px !important; padding: 2px 6px !important; }
+.ios-compact.v8-game-board .meta-chip > span:first-child,
+.ios-compact.v8-game-board .meta-chip strong { font-size: 5px !important; }
+.ios-compact.v8-game-board .uno-button { min-width: 62px !important; min-height: 34px !important; font-size: 12px !important; border-width: 2px !important; box-shadow: 0 4px 0 #761015, 0 7px 12px rgba(0,0,0,.22) !important; }
+.ios-compact.v8-game-board .my-hand-header { min-height: 18px !important; padding: 0 4px !important; }
+.ios-compact.v8-game-board .mini-player-avatar { width: 18px !important; height: 18px !important; font-size: 11px !important; }
+.ios-compact.v8-game-board .my-player-copy strong { font-size: 9px !important; }
+.ios-compact.v8-game-board .my-player-copy span { font-size: 5px !important; }
 
+/* Safari with toolbars expanded, landscape-like short portrait, older iPhones. */
 .ios-short.v8-game-board {
-  padding-top: max(1px, env(safe-area-inset-top)) !important;
-  padding-bottom: max(1px, env(safe-area-inset-bottom)) !important;
-  gap: 2px !important;
+  --game-top-row: 31px;
+  --game-opponent-row: 40px;
+  --game-hand-row: 102px;
 }
-.ios-short.v8-game-board .game-topbar { min-height: 33px !important; padding: 0 1px !important; }
-.ios-short.v8-game-board .room-mini { min-height: 26px !important; padding: 2px 7px !important; }
+.ios-short.v8-game-board .room-mini { min-height: 24px !important; padding: 1px 6px !important; }
 .ios-short.v8-game-board .room-mini span,
 .ios-short.v8-game-board .match-score small,
-.ios-short.v8-game-board .match-score > span { font-size: 4px !important; }
-.ios-short.v8-game-board .room-mini strong { font-size: 10px !important; }
-.ios-short.v8-game-board .match-score { min-width: 76px !important; padding: 1px 8px 2px !important; }
-.ios-short.v8-game-board .match-score strong { font-size: 15px !important; }
-.ios-short.v8-game-board .game-control-button { width: 30px !important; height: 30px !important; }
-.ios-short.v8-game-board .game-profile-avatar { width: 23px !important; height: 23px !important; font-size: 13px !important; }
-.ios-short.v8-game-board .v6-opponent-strip { min-height: 44px !important; max-height: 44px !important; padding: 3px 5px !important; }
-.ios-short.v8-game-board .player-avatar { width: 29px !important; height: 29px !important; font-size: 15px !important; }
+.ios-short.v8-game-board .match-score > span { display: none !important; }
+.ios-short.v8-game-board .room-mini strong { font-size: 9px !important; }
+.ios-short.v8-game-board .match-score { min-width: 58px !important; min-height: 24px !important; padding: 1px 6px !important; }
+.ios-short.v8-game-board .match-score strong { margin: 0 !important; font-size: 13px !important; }
+.ios-short.v8-game-board .game-control-button { width: 27px !important; height: 27px !important; }
+.ios-short.v8-game-board .game-profile-avatar { width: 20px !important; height: 20px !important; font-size: 11px !important; }
+.ios-short.v8-game-board .v6-opponent-strip { padding: 1px 4px !important; }
+.ios-short.v8-game-board .player-avatar { width: 26px !important; height: 26px !important; font-size: 13px !important; }
 .ios-short.v8-game-board .opponent-info span { display: none !important; }
-.ios-short.v8-game-board .mini-card-back { width: 22px !important; height: 31px !important; margin-left: -12px !important; }
-.ios-short.v8-game-board .v6-turn-pill { min-height: 18px !important; font-size: 6px !important; padding: 0 7px !important; margin-bottom: 1px !important; }
-.ios-short.v8-game-board .center-table-card { width: min(100%, 252px) !important; padding: 1px 4px !important; }
-.ios-short.v8-game-board .piles-row { gap: 24px !important; }
+.ios-short.v8-game-board .opponent-card-fan-item .mini-card-back { width: 21px !important; height: 30px !important; }
+.ios-short.v8-game-board .v6-turn-pill { min-height: 16px !important; font-size: 5px !important; }
+.ios-short.v8-game-board .center-table-card { width: min(100%, 238px) !important; }
+.ios-short.v8-game-board .piles-row { gap: 20px !important; }
 .ios-short.v8-game-board .draw-stack,
-.ios-short.v8-game-board .discard-stack { width: 64px !important; gap: 3px !important; }
+.ios-short.v8-game-board .discard-stack { width: 56px !important; }
 .ios-short.v8-game-board .draw-stack .card-back,
-.ios-short.v8-game-board .discard-stack .uno-card { width: 58px !important; height: 84px !important; flex-basis: 58px !important; border-width: 3px !important; border-radius: 10px !important; }
-.ios-short.v8-game-board .pile-caption { margin-top: 2px !important; font-size: 5px !important; }
-.ios-short.v8-game-board .table-meta { margin-top: 2px !important; gap: 4px !important; }
-.ios-short.v8-game-board .meta-chip { min-height: 19px !important; padding: 2px 6px !important; }
-.ios-short.v8-game-board .game-message { min-height: 10px !important; max-height: 12px !important; margin-top: 1px !important; font-size: 6px !important; }
-.ios-short.v8-game-board .draw-choice-banner { min-height: 28px !important; margin-top: 3px !important; font-size: 8px !important; }
-.ios-short.v8-game-board .draw-choice-banner button { min-height: 22px !important; }
-.ios-short.v8-game-board .catch-uno-button { min-height: 34px !important; padding: 4px 11px !important; }
-.ios-short.v8-game-board .uno-button { min-width: 62px !important; min-height: 35px !important; font-size: 12px !important; box-shadow: 0 4px 0 #761015, 0 8px 12px rgba(0,0,0,.22) !important; }
-.ios-short.v8-game-board .v6-hand-dock { padding-top: 1px !important; padding-bottom: 1px !important; border-radius: 16px 16px 0 0 !important; }
-.ios-short.v8-game-board .my-hand-header { min-height: 18px !important; padding: 0 4px !important; }
-.ios-short.v8-game-board .mini-player-avatar { width: 18px !important; height: 18px !important; font-size: 11px !important; }
-.ios-short.v8-game-board .my-player-copy strong { font-size: 9px !important; }
+.ios-short.v8-game-board .discard-stack .uno-card { width: 50px !important; height: 72px !important; flex-basis: 50px !important; border-width: 2px !important; border-radius: 8px !important; }
+.ios-short.v8-game-board .pile-caption { display: none !important; }
+.ios-short.v8-game-board .table-meta { display: none !important; }
+.ios-short.v8-game-board .game-message { display: none !important; }
+.ios-short.v8-game-board .uno-button { min-width: 56px !important; min-height: 30px !important; font-size: 10px !important; border-width: 2px !important; box-shadow: 0 3px 0 #761015 !important; }
+.ios-short.v8-game-board .my-hand-header { min-height: 15px !important; padding: 0 3px !important; }
+.ios-short.v8-game-board .mini-player-avatar,
 .ios-short.v8-game-board .my-player-copy span,
-.ios-short.v8-game-board .drawn-badge { display: none !important; }
+.ios-short.v8-game-board .player-badges { display: none !important; }
 
+/* Emergency fit mode: every meaningful control remains visible. */
 .ios-tiny.v8-game-board {
+  --game-top-row: 28px;
+  --game-opponent-row: 35px;
+  --game-hand-row: 88px;
   gap: 1px !important;
-  padding-top: max(0px, env(safe-area-inset-top)) !important;
-  padding-bottom: max(0px, env(safe-area-inset-bottom)) !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
 }
-.ios-tiny.v8-game-board .game-topbar { min-height: 30px !important; }
-.ios-tiny.v8-game-board .room-mini { min-height: 24px !important; padding: 2px 6px !important; }
-.ios-tiny.v8-game-board .match-score { min-width: 68px !important; padding: 1px 6px 2px !important; }
-.ios-tiny.v8-game-board .match-score strong { font-size: 13px !important; }
-.ios-tiny.v8-game-board .game-control-button { width: 27px !important; height: 27px !important; }
-.ios-tiny.v8-game-board .v6-opponent-strip { min-height: 39px !important; max-height: 39px !important; padding: 2px 4px !important; }
-.ios-tiny.v8-game-board .player-avatar { width: 25px !important; height: 25px !important; font-size: 13px !important; }
-.ios-tiny.v8-game-board .opponent-info strong { font-size: 9px !important; }
-.ios-tiny.v8-game-board .v6-turn-pill { min-height: 16px !important; font-size: 5px !important; }
-.ios-tiny.v8-game-board .center-table-card { width: min(100%, 226px) !important; }
+.ios-tiny.v8-game-board .room-mini { min-height: 21px !important; padding: 0 5px !important; }
+.ios-tiny.v8-game-board .room-mini span,
+.ios-tiny.v8-game-board .match-score small,
+.ios-tiny.v8-game-board .match-score > span { display: none !important; }
+.ios-tiny.v8-game-board .room-mini strong { font-size: 8px !important; }
+.ios-tiny.v8-game-board .match-score { min-width: 52px !important; min-height: 21px !important; padding: 0 5px !important; }
+.ios-tiny.v8-game-board .match-score strong { font-size: 12px !important; }
+.ios-tiny.v8-game-board .game-control-button { width: 24px !important; height: 24px !important; }
+.ios-tiny.v8-game-board .v6-opponent-strip { padding: 0 3px !important; }
+.ios-tiny.v8-game-board .player-avatar { width: 23px !important; height: 23px !important; font-size: 11px !important; }
+.ios-tiny.v8-game-board .opponent-info strong { font-size: 8px !important; }
+.ios-tiny.v8-game-board .opponent-card-fan-item .mini-card-back { width: 18px !important; height: 26px !important; }
+.ios-tiny.v8-game-board .v6-turn-pill { min-height: 14px !important; font-size: 5px !important; }
+.ios-tiny.v8-game-board .center-table-card { width: min(100%, 210px) !important; }
+.ios-tiny.v8-game-board .piles-row { gap: 16px !important; }
 .ios-tiny.v8-game-board .draw-stack,
-.ios-tiny.v8-game-board .discard-stack { width: 54px !important; }
+.ios-tiny.v8-game-board .discard-stack { width: 48px !important; }
 .ios-tiny.v8-game-board .draw-stack .card-back,
-.ios-tiny.v8-game-board .discard-stack .uno-card { width: 48px !important; height: 69px !important; flex-basis: 48px !important; border-width: 2px !important; border-radius: 8px !important; }
-.ios-tiny.v8-game-board .table-meta { display: none !important; }
+.ios-tiny.v8-game-board .discard-stack .uno-card { width: 43px !important; height: 62px !important; flex-basis: 43px !important; border-width: 2px !important; border-radius: 7px !important; }
+.ios-tiny.v8-game-board .pile-caption,
+.ios-tiny.v8-game-board .table-meta,
 .ios-tiny.v8-game-board .game-message { display: none !important; }
-.ios-tiny.v8-game-board .uno-button { min-width: 58px !important; min-height: 32px !important; font-size: 11px !important; }
-.ios-tiny.v8-game-board .my-hand-header { min-height: 16px !important; }
+.ios-tiny.v8-game-board .uno-button { min-width: 50px !important; min-height: 27px !important; font-size: 9px !important; border-width: 2px !important; box-shadow: 0 2px 0 #761015 !important; }
+.ios-tiny.v8-game-board .my-hand-header { min-height: 13px !important; padding: 0 2px !important; }
 .ios-tiny.v8-game-board .mini-player-avatar,
 .ios-tiny.v8-game-board .my-player-copy span,
 .ios-tiny.v8-game-board .player-badges { display: none !important; }
+
+/* Keep desktop/full-height phones polished while using the same non-overflowing grid. */
+.ios-full.v8-game-board {
+  --game-top-row: 40px;
+  --game-opponent-row: 54px;
+  --game-hand-row: 146px;
+}
+
+
+/* Classic v6.4-style synced game moments, rendered through an iOS-safe body portal. */
+/* Top-level portal. Intentionally independent from the game board stacking context. */
+.iosfx-layer {
+  position: fixed;
+  z-index: 2147483000;
+  overflow: hidden;
+  pointer-events: none;
+  contain: none;
+  isolation: isolate;
+  opacity: 1;
+  color: white;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", system-ui, sans-serif;
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+}
+
+.iosfx-layer * {
+  box-sizing: border-box;
+  animation: none !important;
+  transition: none !important;
+}
+
+.iosfx-glow {
+  position: absolute;
+  z-index: 0;
+  left: 50%;
+  top: 50%;
+  width: min(120vw, 620px);
+  height: min(74vh, 620px);
+  transform: translate3d(-50%,-50%,0);
+  border-radius: 50%;
+  background: radial-gradient(circle, color-mix(in srgb, var(--fx-accent) 42%, transparent), transparent 68%);
+  filter: blur(18px);
+  opacity: .68;
+}
+
+.iosfx-trail {
+  position: absolute;
+  z-index: 1;
+  left: 50%;
+  top: 50%;
+  width: 190px;
+  height: 190px;
+  transform: translate3d(-50%,-50%,0);
+  border: 1px solid rgba(255,255,255,.16);
+  border-radius: 50%;
+  box-shadow: 0 0 0 22px rgba(255,255,255,.025), 0 0 0 52px rgba(255,255,255,.012);
+  opacity: .35;
+}
+
+.iosfx-play-card,
+.iosfx-draw-card,
+.iosfx-color-hero,
+.iosfx-penalty-hero,
+.iosfx-action-hero,
+.iosfx-uno-hero,
+.iosfx-round-hero {
+  position: absolute;
+  z-index: 5;
+  left: 50%;
+  top: 48%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transform: translate3d(-50%,-50%,0);
+  text-align: center;
+  opacity: 1;
+}
+
+.iosfx-play-card > small,
+.iosfx-draw-card > small,
+.iosfx-color-hero > small,
+.iosfx-penalty-hero > small,
+.iosfx-action-hero > small,
+.iosfx-uno-hero > small,
+.iosfx-round-hero > small {
+  color: rgba(255,255,255,.63);
+  font-size: 8px;
+  font-weight: 900;
+  letter-spacing: .16em;
+  white-space: nowrap;
+  text-shadow: 0 3px 14px rgba(0,0,0,.6);
+}
+
+.iosfx-card-face,
+.iosfx-flying-card {
+  display: grid;
+  place-items: center;
+  border: 3px solid rgba(255,255,255,.96);
+  border-radius: 10px;
+  background: radial-gradient(ellipse at center, #cc171d 0 46%, transparent 47%), repeating-linear-gradient(45deg, #111 0 5px, #222 5px 10px);
+  box-shadow: 0 14px 32px rgba(0,0,0,.48);
+}
+
+.iosfx-card-face {
+  width: 62px;
+  height: 90px;
+  margin-top: 7px;
+  background: var(--fx-accent);
+}
+.iosfx-card-face strong { font-size: 31px; font-weight: 1000; color: white; }
+
+.iosfx-draw-card .iosfx-flying-card {
+  position: relative;
+  left: auto;
+  top: auto;
+  width: 58px;
+  height: 84px;
+  margin-top: 7px;
+  transform: none;
+  opacity: 1;
+}
+
+.iosfx-flying-card {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 54px;
+  height: 78px;
+  transform: translate3d(-50%,-50%,0);
+  opacity: 0;
+}
+.iosfx-flying-card span { transform: rotate(-15deg); font-size: 12px; font-style: italic; font-weight: 1000; color: #fff; }
+.iosfx-flying-card.is-rainbow:nth-child(4n+1) { box-shadow: 0 0 0 2px #ef433d, 0 14px 32px rgba(0,0,0,.48); }
+.iosfx-flying-card.is-rainbow:nth-child(4n+2) { box-shadow: 0 0 0 2px #f4ca35, 0 14px 32px rgba(0,0,0,.48); }
+.iosfx-flying-card.is-rainbow:nth-child(4n+3) { box-shadow: 0 0 0 2px #2db367, 0 14px 32px rgba(0,0,0,.48); }
+.iosfx-flying-card.is-rainbow:nth-child(4n+4) { box-shadow: 0 0 0 2px #2f80df, 0 14px 32px rgba(0,0,0,.48); }
+
+.iosfx-color-hero strong {
+  margin-top: 1px;
+  color: #fff;
+  font-size: clamp(42px, 14vw, 66px);
+  font-weight: 1000;
+  letter-spacing: -.055em;
+  text-shadow: 0 14px 38px rgba(0,0,0,.42);
+}
+.iosfx-color-hero i { width: 56px; height: 7px; margin-top: 8px; border-radius: 999px; background: var(--fx-accent); box-shadow: 0 0 28px var(--fx-accent); }
+
+.iosfx-penalty-hero strong {
+  margin: -6px 0 -7px;
+  color: var(--fx-accent);
+  font-size: clamp(82px, 27vw, 126px);
+  font-weight: 1000;
+  line-height: 1;
+  letter-spacing: -.09em;
+  text-shadow: 0 18px 42px rgba(0,0,0,.52);
+}
+.iosfx-penalty-hero span { font-size: 11px; font-weight: 950; letter-spacing: .12em; }
+.iosfx-penalty-hero em { margin-top: 7px; font-size: 9px; font-style: normal; font-weight: 950; letter-spacing: .13em; color: rgba(255,255,255,.7); }
+.iosfx-card-flight { position: absolute; z-index: 4; inset: 0; }
+
+.iosfx-action-hero b { font-size: 74px; line-height: .95; font-weight: 500; text-shadow: 0 16px 38px rgba(0,0,0,.45); }
+.iosfx-action-hero strong { margin-top: 5px; font-size: 28px; font-weight: 1000; letter-spacing: -.035em; }
+
+.iosfx-uno-hero strong {
+  min-width: 190px;
+  min-height: 105px;
+  display: grid;
+  place-items: center;
+  border: 6px solid white;
+  border-radius: 50%;
+  background: linear-gradient(145deg,#f54b42,#c70d18);
+  color: white;
+  font-size: 45px;
+  font-style: italic;
+  font-weight: 1000;
+  letter-spacing: -.07em;
+  box-shadow: 0 20px 48px rgba(0,0,0,.46);
+}
+.iosfx-uno-hero small { margin-top: 12px; }
+
+.iosfx-round-hero strong { margin-top: 2px; font-size: 42px; font-weight: 1000; letter-spacing: -.045em; }
+
+@media (max-width: 370px) {
+  .qc-mini-popover { width: min(228px, calc(100vw - 16px)); max-height: 176px; }
+  .qc-mini-grid { grid-template-columns: repeat(2, minmax(0,1fr)); }
+  .qc-mini-grid button { min-height: 29px; font-size: 8px; }
+  .iosfx-penalty-hero strong { font-size: clamp(76px, 26vw, 110px); }
+}

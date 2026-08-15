@@ -90,3 +90,11 @@ Firebase Web configuration is intentionally client-visible in a static web appli
 - Lobby is a compact head-to-head table with two seats and a central VS medallion.
 - In-game HUD uses fewer glass panels and a stronger physical table / rail hierarchy.
 - Existing realtime gameplay, iOS VisualViewport handling, gesture cards, synchronized effects and Web Audio game sounds are preserved.
+
+
+## v8.2 — iPhone fit + classic animations
+
+- Rebuilt the portrait in-game layout as explicit opponent / table / hand viewport zones.
+- Removed the Safari double-offset behavior that could push the board below the visible screen.
+- Hand card sizing now follows the actual visible viewport height so it cannot force the table off-screen.
+- Restored the classic synchronized UNO Duel action moments (play, draw, Wild color, +2/+4, Skip, Reverse, UNO, round start) through the iOS-safe portal/Web Animations layer.
