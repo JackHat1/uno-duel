@@ -172,6 +172,8 @@ export default function GameBoard({
   const boardStyle = {
     '--board-vw': `${viewport.width}px`,
     '--board-vh': `${viewport.height}px`,
+    '--board-top': `${viewport.offsetTop || 0}px`,
+    '--board-left': `${viewport.offsetLeft || 0}px`,
   }
 
   const handFanLayout = useMemo(() => {

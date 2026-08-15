@@ -4870,3 +4870,148 @@ html[data-theme="light"] .v8-loading-screen {
 @media (prefers-reduced-motion: reduce) {
   .v8-loading-cards i { animation:none !important; }
 }
+
+
+/* =====================================================================
+   v8.1 iPhone in-game viewport fix
+   Keep the live game locked to the actual Safari visible viewport and
+   compress the board more aggressively on short iPhone screens.
+   ===================================================================== */
+.v8-game-board {
+  position: fixed !important;
+  top: var(--board-top, var(--app-vv-top, 0px)) !important;
+  left: var(--board-left, var(--app-vv-left, 0px)) !important;
+  width: var(--board-vw, var(--app-width, 100vw)) !important;
+  height: var(--board-vh, var(--app-height, 100dvh)) !important;
+  max-height: var(--board-vh, var(--app-height, 100dvh)) !important;
+  margin: 0 !important;
+  padding-top: max(2px, env(safe-area-inset-top)) !important;
+  padding-right: max(6px, env(safe-area-inset-right)) !important;
+  padding-bottom: max(2px, env(safe-area-inset-bottom)) !important;
+  padding-left: max(6px, env(safe-area-inset-left)) !important;
+  gap: clamp(2px, .55vh, 6px) !important;
+}
+
+.v8-game-board .table-zone {
+  justify-content: flex-start !important;
+  padding-top: 2px !important;
+}
+
+.v8-game-board .center-table-card {
+  width: min(100%, 300px) !important;
+}
+
+.v8-game-board .draw-stack,
+.v8-game-board .discard-stack {
+  width: 86px !important;
+}
+
+.v8-game-board .draw-stack .card-back,
+.v8-game-board .discard-stack .uno-card {
+  width: 76px !important;
+  height: 110px !important;
+  flex-basis: 76px !important;
+}
+
+.v8-game-board .v6-hand-dock {
+  padding-top: 3px !important;
+  padding-bottom: 2px !important;
+}
+
+.v8-game-board .hand-fan-fixed {
+  max-width: 100% !important;
+}
+
+.ios-compact.v8-game-board {
+  padding-top: max(1px, env(safe-area-inset-top)) !important;
+  padding-bottom: max(1px, env(safe-area-inset-bottom)) !important;
+  gap: 3px !important;
+}
+.ios-compact.v8-game-board .game-topbar { min-height: 36px !important; padding: 1px 2px !important; }
+.ios-compact.v8-game-board .room-mini { min-height: 29px !important; padding: 3px 8px !important; }
+.ios-compact.v8-game-board .match-score { min-width: 82px !important; padding: 2px 9px 3px !important; }
+.ios-compact.v8-game-board .v6-opponent-strip { min-height: 50px !important; padding: 4px 6px !important; }
+.ios-compact.v8-game-board .player-avatar { width: 33px !important; height: 33px !important; font-size: 17px !important; }
+.ios-compact.v8-game-board .opponent-info strong { font-size: 10px !important; }
+.ios-compact.v8-game-board .opponent-info span { font-size: 6px !important; }
+.ios-compact.v8-game-board .v6-turn-pill { min-height: 21px !important; margin-bottom: 2px !important; }
+.ios-compact.v8-game-board .center-table-card { width: min(100%, 286px) !important; padding-top: 4px !important; }
+.ios-compact.v8-game-board .piles-row { gap: min(12vw, 34px) !important; }
+.ios-compact.v8-game-board .draw-stack,
+.ios-compact.v8-game-board .discard-stack { width: 76px !important; gap: 5px !important; }
+.ios-compact.v8-game-board .draw-stack .card-back,
+.ios-compact.v8-game-board .discard-stack .uno-card { width: 68px !important; height: 98px !important; flex-basis: 68px !important; }
+.ios-compact.v8-game-board .table-meta { margin-top: 4px !important; }
+.ios-compact.v8-game-board .game-message { min-height: 12px !important; margin-top: 2px !important; font-size: 6px !important; }
+.ios-compact.v8-game-board .uno-button { min-width: 66px !important; min-height: 38px !important; font-size: 13px !important; }
+.ios-compact.v8-game-board .v6-hand-dock { padding-top: 2px !important; }
+.ios-compact.v8-game-board .my-hand-header { min-height: 22px !important; }
+.ios-compact.v8-game-board .hand-fan-fixed { margin-top: -1px !important; }
+
+.ios-short.v8-game-board {
+  padding-top: max(1px, env(safe-area-inset-top)) !important;
+  padding-bottom: max(1px, env(safe-area-inset-bottom)) !important;
+  gap: 2px !important;
+}
+.ios-short.v8-game-board .game-topbar { min-height: 33px !important; padding: 0 1px !important; }
+.ios-short.v8-game-board .room-mini { min-height: 26px !important; padding: 2px 7px !important; }
+.ios-short.v8-game-board .room-mini span,
+.ios-short.v8-game-board .match-score small,
+.ios-short.v8-game-board .match-score > span { font-size: 4px !important; }
+.ios-short.v8-game-board .room-mini strong { font-size: 10px !important; }
+.ios-short.v8-game-board .match-score { min-width: 76px !important; padding: 1px 8px 2px !important; }
+.ios-short.v8-game-board .match-score strong { font-size: 15px !important; }
+.ios-short.v8-game-board .game-control-button { width: 30px !important; height: 30px !important; }
+.ios-short.v8-game-board .game-profile-avatar { width: 23px !important; height: 23px !important; font-size: 13px !important; }
+.ios-short.v8-game-board .v6-opponent-strip { min-height: 44px !important; max-height: 44px !important; padding: 3px 5px !important; }
+.ios-short.v8-game-board .player-avatar { width: 29px !important; height: 29px !important; font-size: 15px !important; }
+.ios-short.v8-game-board .opponent-info span { display: none !important; }
+.ios-short.v8-game-board .mini-card-back { width: 22px !important; height: 31px !important; margin-left: -12px !important; }
+.ios-short.v8-game-board .v6-turn-pill { min-height: 18px !important; font-size: 6px !important; padding: 0 7px !important; margin-bottom: 1px !important; }
+.ios-short.v8-game-board .center-table-card { width: min(100%, 252px) !important; padding: 1px 4px !important; }
+.ios-short.v8-game-board .piles-row { gap: 24px !important; }
+.ios-short.v8-game-board .draw-stack,
+.ios-short.v8-game-board .discard-stack { width: 64px !important; gap: 3px !important; }
+.ios-short.v8-game-board .draw-stack .card-back,
+.ios-short.v8-game-board .discard-stack .uno-card { width: 58px !important; height: 84px !important; flex-basis: 58px !important; border-width: 3px !important; border-radius: 10px !important; }
+.ios-short.v8-game-board .pile-caption { margin-top: 2px !important; font-size: 5px !important; }
+.ios-short.v8-game-board .table-meta { margin-top: 2px !important; gap: 4px !important; }
+.ios-short.v8-game-board .meta-chip { min-height: 19px !important; padding: 2px 6px !important; }
+.ios-short.v8-game-board .game-message { min-height: 10px !important; max-height: 12px !important; margin-top: 1px !important; font-size: 6px !important; }
+.ios-short.v8-game-board .draw-choice-banner { min-height: 28px !important; margin-top: 3px !important; font-size: 8px !important; }
+.ios-short.v8-game-board .draw-choice-banner button { min-height: 22px !important; }
+.ios-short.v8-game-board .catch-uno-button { min-height: 34px !important; padding: 4px 11px !important; }
+.ios-short.v8-game-board .uno-button { min-width: 62px !important; min-height: 35px !important; font-size: 12px !important; box-shadow: 0 4px 0 #761015, 0 8px 12px rgba(0,0,0,.22) !important; }
+.ios-short.v8-game-board .v6-hand-dock { padding-top: 1px !important; padding-bottom: 1px !important; border-radius: 16px 16px 0 0 !important; }
+.ios-short.v8-game-board .my-hand-header { min-height: 18px !important; padding: 0 4px !important; }
+.ios-short.v8-game-board .mini-player-avatar { width: 18px !important; height: 18px !important; font-size: 11px !important; }
+.ios-short.v8-game-board .my-player-copy strong { font-size: 9px !important; }
+.ios-short.v8-game-board .my-player-copy span,
+.ios-short.v8-game-board .drawn-badge { display: none !important; }
+
+.ios-tiny.v8-game-board {
+  gap: 1px !important;
+  padding-top: max(0px, env(safe-area-inset-top)) !important;
+  padding-bottom: max(0px, env(safe-area-inset-bottom)) !important;
+}
+.ios-tiny.v8-game-board .game-topbar { min-height: 30px !important; }
+.ios-tiny.v8-game-board .room-mini { min-height: 24px !important; padding: 2px 6px !important; }
+.ios-tiny.v8-game-board .match-score { min-width: 68px !important; padding: 1px 6px 2px !important; }
+.ios-tiny.v8-game-board .match-score strong { font-size: 13px !important; }
+.ios-tiny.v8-game-board .game-control-button { width: 27px !important; height: 27px !important; }
+.ios-tiny.v8-game-board .v6-opponent-strip { min-height: 39px !important; max-height: 39px !important; padding: 2px 4px !important; }
+.ios-tiny.v8-game-board .player-avatar { width: 25px !important; height: 25px !important; font-size: 13px !important; }
+.ios-tiny.v8-game-board .opponent-info strong { font-size: 9px !important; }
+.ios-tiny.v8-game-board .v6-turn-pill { min-height: 16px !important; font-size: 5px !important; }
+.ios-tiny.v8-game-board .center-table-card { width: min(100%, 226px) !important; }
+.ios-tiny.v8-game-board .draw-stack,
+.ios-tiny.v8-game-board .discard-stack { width: 54px !important; }
+.ios-tiny.v8-game-board .draw-stack .card-back,
+.ios-tiny.v8-game-board .discard-stack .uno-card { width: 48px !important; height: 69px !important; flex-basis: 48px !important; border-width: 2px !important; border-radius: 8px !important; }
+.ios-tiny.v8-game-board .table-meta { display: none !important; }
+.ios-tiny.v8-game-board .game-message { display: none !important; }
+.ios-tiny.v8-game-board .uno-button { min-width: 58px !important; min-height: 32px !important; font-size: 11px !important; }
+.ios-tiny.v8-game-board .my-hand-header { min-height: 16px !important; }
+.ios-tiny.v8-game-board .mini-player-avatar,
+.ios-tiny.v8-game-board .my-player-copy span,
+.ios-tiny.v8-game-board .player-badges { display: none !important; }
