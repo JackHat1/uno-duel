@@ -168,7 +168,7 @@ export default function GameBoard({
 
 
   const viewportMode = viewport.height < 620 ? 'tiny' : viewport.height < 700 ? 'short' : viewport.height < 780 ? 'compact' : 'full'
-  const boardClassName = `game-screen polished-game-screen premium-game-board ios-board ios-${viewportMode} v6-game-board v7-game-board v6-color-${game?.currentColor || 'red'} ${momentEvent ? `is-event-${momentEvent.type}` : ''}`
+  const boardClassName = `game-screen polished-game-screen premium-game-board ios-board ios-${viewportMode} v6-game-board v7-game-board v8-game-board v6-color-${game?.currentColor || 'red'} ${momentEvent ? `is-event-${momentEvent.type}` : ''}`
   const boardStyle = {
     '--board-vw': `${viewport.width}px`,
     '--board-vh': `${viewport.height}px`,
@@ -274,7 +274,7 @@ export default function GameBoard({
         <div className="match-score" aria-label={`Round ${roundNumber}, score ${myScore} to ${opponentScore}`}>
           <small>ROUND {roundNumber}</small>
           <strong>{myScore}<i>:</i>{opponentScore}</strong>
-          <span>first to {targetWins}</span>
+          <span>TO {targetWins}</span>
         </div>
 
         <div className="topbar-actions premium-game-actions ios-top-actions">

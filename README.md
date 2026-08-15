@@ -80,3 +80,13 @@ Firebase Web configuration is intentionally client-visible in a static web appli
 - Browsers that expose the Vibration API receive subtle tactile feedback for key actions.
 - Home and lobby screens now behave more like a title/versus flow and include menu sound feedback.
 - UNO button, player dock, quick-chat control and winner modal were restyled to feel like physical game controls instead of web UI widgets.
+
+
+## v8 — unified game identity
+
+- Home, lobby, player profile, loading states and the game table now share one card-game visual language.
+- Removed developer-facing / template-like status badges from the player-facing home screen.
+- Player profile is presented as a Player Card instead of a settings form.
+- Lobby is a compact head-to-head table with two seats and a central VS medallion.
+- In-game HUD uses fewer glass panels and a stronger physical table / rail hierarchy.
+- Existing realtime gameplay, iOS VisualViewport handling, gesture cards, synchronized effects and Web Audio game sounds are preserved.

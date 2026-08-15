@@ -62,71 +62,68 @@ export default function LobbyScreen({
   }
 
   return (
-    <main className="lobby-screen safe-screen premium-lobby-screen v7-lobby-screen">
-      <div className="ambient-grid" aria-hidden="true" />
-      <div className="ambient-orb orb-one" aria-hidden="true" />
-      <div className="ambient-orb orb-two" aria-hidden="true" />
+    <main className="lobby-screen safe-screen v8-lobby-screen">
+      <div className="v8-felt-bg" aria-hidden="true" />
 
-      <header className="lobby-topbar premium-shell-width">
-        <div className="mini-brand-lockup"><span className="mini-brand-symbol">U</span><div><strong>UNO DUEL</strong><small>LOBBY</small></div></div>
-        <div className="topbar-actions">
-          <button className="clean-icon-button premium-control" type="button" onClick={() => { playMenuSound('tap'); onToggleTheme() }} aria-label="Toggle theme">
-            <AppIcon name={theme === 'dark' ? 'sun' : 'moon'} />
-          </button>
-          <button className="profile-avatar-button" type="button" onClick={() => { playMenuSound('tap'); onOpenProfile() }} aria-label="Edit player profile">
-            <span style={{ background: getPlayerGradient(me) }}>{getPlayerAvatar(me)}</span>
-          </button>
+      <header className="v8-menu-topbar">
+        <button className="v8-leave-mini" type="button" onClick={() => { playMenuSound('tap'); onLeave() }} disabled={busy}>
+          <AppIcon name="exit" size={17} />
+          <span>Leave</span>
+        </button>
+        <div className="v8-wordmark-small"><b>UNO</b><span>DUEL</span></div>
+        <div className="v8-menu-tools">
+          <button className="v8-round-tool" type="button" onClick={() => { playMenuSound('tap'); onToggleTheme() }} aria-label="Toggle theme"><AppIcon name={theme === 'dark' ? 'sun' : 'moon'} size={18} /></button>
+          <button className="v8-round-tool v8-profile-tool" type="button" onClick={() => { playMenuSound('tap'); onOpenProfile() }} aria-label="Player profile"><span style={{ background: getPlayerGradient(me) }}>{getPlayerAvatar(me)}</span></button>
         </div>
       </header>
 
-      <section className="premium-lobby-card premium-shell-width">
-        <div className="lobby-status-line"><i className={`status-dot ${ready ? 'ready' : ''}`} /><span>{ready ? 'BOTH PLAYERS READY' : 'WAITING FOR PLAYER 2'}</span></div>
-        <p className="section-kicker">PRIVATE ROOM</p>
-        <h1>Share the code</h1>
-        <p className="lobby-subtitle">Your opponent joins instantly from any phone or browser.</p>
+      <section className="v8-lobby-stage">
+        <div className="v8-room-ticket">
+          <span>ROOM CODE</span>
+          <button type="button" onClick={copyCode} aria-label="Copy room code">{roomCode}</button>
+          <small>{copied ? 'Copied to clipboard' : 'Tap the code to copy'}</small>
+        </div>
 
-        <button className="premium-room-code" onClick={copyCode} type="button" aria-label="Copy room code">
-          <span>{roomCode}</span>
-          <span className="copy-code-action"><AppIcon name="copy" size={18} /> {copied ? 'COPIED' : 'COPY'}</span>
-        </button>
+        <div className="v8-versus-table">
+          <div className={`v8-seat v8-seat-you ${me ? 'is-ready' : ''}`}>
+            <span className="v8-seat-avatar" style={{ background: getPlayerGradient(me) }}>{getPlayerAvatar(me)}</span>
+            <div><small>YOU</small><strong>{me?.name || 'Player'}</strong></div>
+            <i>{me ? 'READY' : 'WAITING'}</i>
+          </div>
 
-        <div className="duel-player-list v7-duel-player-list">
-          <span className="v7-versus-mark" aria-hidden="true">VS</span>
-          {[room.players?.p1, room.players?.p2].map((player, index) => (
-            <div className={`duel-player-row ${player ? 'is-ready' : ''}`} key={player?.uid || `slot-${index}`}>
-              <span className="duel-player-avatar" style={{ background: getPlayerGradient(player || { name: 'Waiting' }) }}>
-                {player ? getPlayerAvatar(player) : '·'}
-              </span>
-              <div className="duel-player-copy">
-                <strong>{player?.name || 'Open slot'}</strong>
-                <span>{index === 0 ? 'HOST' : 'CHALLENGER'}</span>
-              </div>
-              <span className={`player-ready-state ${player ? 'ready' : ''}`}>{player ? 'READY' : 'WAITING'}</span>
-            </div>
-          ))}
+          <div className="v8-vs-medallion">VS</div>
+
+          <div className={`v8-seat v8-seat-opponent ${opponent ? 'is-ready' : ''}`}>
+            <span className="v8-seat-avatar" style={{ background: getPlayerGradient(opponent || { name: 'Opponent' }) }}>{opponent ? getPlayerAvatar(opponent) : '?'}</span>
+            <div><small>OPPONENT</small><strong>{opponent?.name || 'Waiting…'}</strong></div>
+            <i>{opponent ? 'READY' : 'OPEN'}</i>
+          </div>
+        </div>
+
+        <div className="v8-lobby-status">
+          <span className={ready ? 'ready' : ''} />
+          {ready ? 'Both players are ready' : 'Waiting for your opponent'}
         </div>
 
         {!ready && isHost && (
-          <button className="premium-secondary-button" onClick={shareRoom} type="button">
+          <button className="v8-secondary-game-button" onClick={shareRoom} type="button">
             <AppIcon name="share" size={19} />
             <span>Share invite</span>
           </button>
         )}
 
         {ready && isHost && (
-          <button className="premium-primary-button lobby-start-button" onClick={() => { playMenuSound('start'); onStart() }} disabled={busy} type="button">
-            <span className="button-copy"><small>PLAYERS READY</small><strong>{busy ? 'Starting…' : 'Start match'}</strong></span>
-            <span className="button-arrow"><AppIcon name="arrow" /></span>
+          <button className="v8-play-button v8-start-match" onClick={() => { playMenuSound('start'); onStart() }} disabled={busy} type="button">
+            <span className="v8-play-button-copy"><small>MATCH READY</small><strong>{busy ? 'Dealing…' : 'Start game'}</strong></span>
+            <span className="v8-play-button-arrow"><AppIcon name="arrow" size={22} /></span>
           </button>
         )}
 
         {ready && !isHost && (
-          <div className="premium-waiting-host"><span className="spinner" /><div><strong>Ready to play</strong><span>Waiting for {opponent?.name || 'the host'}…</span></div></div>
+          <div className="v8-host-wait"><span className="spinner" /><div><strong>Ready</strong><span>Waiting for {opponent?.name || 'host'} to deal…</span></div></div>
         )}
 
-        {error && <div className="error-banner premium-error" role="alert">{error}</div>}
-
-        <button className="premium-text-button danger-text" onClick={() => { playMenuSound('tap'); onLeave() }} disabled={busy} type="button">Leave room</button>
+        {error && <div className="v8-error-toast" role="alert">{error}</div>}
       </section>
     </main>
   )

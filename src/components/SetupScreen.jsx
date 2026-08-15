@@ -1,18 +1,16 @@
 export default function SetupScreen() {
   return (
-    <main className="setup-screen safe-screen">
-      <section className="setup-card glass-panel">
-        <div className="brand-mark brand-mark-small">UNO</div>
-        <h1>Firebase setup required</h1>
-        <p>
-          This project already contains the Firebase project settings and Realtime Database URL.
-          If you see this screen, one of the environment values is missing or was changed.
-        </p>
-        <div className="setup-steps">
-          <div><b>1</b><span>Check that the project <code>.env</code> file exists</span></div>
-          <div><b>2</b><span>Firebase Console → Authentication → Sign-in method → enable <strong>Anonymous</strong></span></div>
-          <div><b>3</b><span>Realtime Database → Rules → paste <code>firebase.rules.json</code> → Publish</span></div>
-          <div><b>4</b><span>Restart <code>npm run dev</code> after any <code>.env</code> change</span></div>
+    <main className="setup-screen safe-screen v8-system-screen">
+      <div className="v8-felt-bg" aria-hidden="true" />
+      <section className="v8-system-card">
+        <div className="v8-logo-lockup v8-logo-lockup-small"><span className="v8-logo-uno">UNO</span><span className="v8-logo-duel">DUEL</span></div>
+        <h1>Table not connected</h1>
+        <p>The game is missing its Firebase configuration.</p>
+        <div className="v8-system-steps">
+          <div><b>1</b><span>Check the project <code>.env</code></span></div>
+          <div><b>2</b><span>Enable Anonymous Authentication</span></div>
+          <div><b>3</b><span>Publish <code>firebase.rules.json</code></span></div>
+          <div><b>4</b><span>Restart the app</span></div>
         </div>
       </section>
     </main>

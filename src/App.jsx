@@ -177,18 +177,18 @@ export default function App() {
     screen = <SetupScreen />
   } else if (authLoading) {
     screen = (
-      <main className="loading-screen safe-screen premium-loading-screen">
-        <div className="brand-mark">UNO</div>
-        <span className="spinner spinner-large" />
-        <p>Connecting your player account…</p>
+      <main className="loading-screen safe-screen premium-loading-screen v8-loading-screen">
+        <div className="v8-loading-logo"><b>UNO</b><span>DUEL</span></div>
+        <div className="v8-loading-cards" aria-hidden="true"><i /><i /><i /></div>
+        <p>Getting the table ready…</p>
       </main>
     )
   } else if (roomCode && !room) {
     screen = (
-      <main className="loading-screen safe-screen premium-loading-screen">
-        <div className="brand-mark">UNO</div>
-        <span className="spinner spinner-large" />
-        <p>Reconnecting to room {roomCode}…</p>
+      <main className="loading-screen safe-screen premium-loading-screen v8-loading-screen">
+        <div className="v8-loading-logo"><b>UNO</b><span>DUEL</span></div>
+        <div className="v8-loading-cards" aria-hidden="true"><i /><i /><i /></div>
+        <p>Rejoining room {roomCode}…</p>
         {error && <div className="error-banner" role="alert">{error}</div>}
       </main>
     )
@@ -222,9 +222,10 @@ export default function App() {
     )
   } else if (!room.game) {
     screen = (
-      <main className="loading-screen safe-screen premium-loading-screen">
-        <span className="spinner spinner-large" />
-        <p>Loading game…</p>
+      <main className="loading-screen safe-screen premium-loading-screen v8-loading-screen">
+        <div className="v8-loading-logo"><b>UNO</b><span>DUEL</span></div>
+        <div className="v8-loading-cards" aria-hidden="true"><i /><i /><i /></div>
+        <p>Dealing cards…</p>
       </main>
     )
   } else {

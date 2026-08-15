@@ -23,55 +23,45 @@ export default function HomeScreen({
   }
 
   return (
-    <main className="home-screen safe-screen premium-home-screen v7-home-screen">
-      <div className="ambient-grid" aria-hidden="true" />
-      <div className="ambient-orb orb-one" aria-hidden="true" />
-      <div className="ambient-orb orb-two" aria-hidden="true" />
-      <div className="ambient-orb orb-three" aria-hidden="true" />
+    <main className="home-screen safe-screen v8-menu-screen">
+      <div className="v8-felt-bg" aria-hidden="true" />
+      <div className="v8-menu-card v8-menu-card-left" aria-hidden="true"><span>7</span></div>
+      <div className="v8-menu-card v8-menu-card-right" aria-hidden="true"><span>+2</span></div>
 
-      <header className="home-topbar premium-shell-width">
-        <div className="mini-brand-lockup">
-          <span className="mini-brand-symbol">U</span>
-          <div><strong>UNO DUEL</strong><small>REALTIME</small></div>
-        </div>
-        <div className="home-header-actions">
-          <button className="clean-icon-button premium-control" type="button" onClick={() => { playMenuSound('tap'); onToggleTheme() }} aria-label="Toggle theme">
-            <AppIcon name={theme === 'dark' ? 'sun' : 'moon'} />
+      <header className="v8-menu-topbar">
+        <div className="v8-wordmark-small"><b>UNO</b><span>DUEL</span></div>
+        <div className="v8-menu-tools">
+          <button className="v8-round-tool" type="button" onClick={() => { playMenuSound('tap'); onToggleTheme() }} aria-label="Toggle theme">
+            <AppIcon name={theme === 'dark' ? 'sun' : 'moon'} size={18} />
           </button>
-          <button className="clean-profile-button" type="button" onClick={() => { playMenuSound('tap'); onOpenProfile() }}>
-            <span className="header-profile-avatar" style={{ background: getAccentGradient(profile?.accent) }}>{profile?.avatar}</span>
-            <span className="header-profile-copy"><small>PLAYER</small><strong>{profile?.name || 'Player'}</strong></span>
-            <AppIcon name="edit" size={16} />
+          <button className="v8-player-chip" type="button" onClick={() => { playMenuSound('tap'); onOpenProfile() }}>
+            <span className="v8-player-chip-avatar" style={{ background: getAccentGradient(profile?.accent) }}>{profile?.avatar}</span>
+            <span>{profile?.name || 'Player'}</span>
           </button>
         </div>
       </header>
 
-      <section className="premium-home-card premium-shell-width v7-home-card">
-        <div className="v7-home-card-fan" aria-hidden="true"><i>U</i><i>N</i><i>O</i></div>
-        <div className="hero-lockup">
-          <div className="hero-logo-wrap">
-            <div className="hero-logo-shadow" />
-            <div className="hero-logo">UNO</div>
-          </div>
-          <p className="hero-eyebrow">HEAD TO HEAD · REAL TIME</p>
-          <h1>One room.<br />One winner.</h1>
-          <p className="hero-subtitle">Fast, private UNO battles built for your phone.</p>
+      <section className="v8-home-stage">
+        <div className="v8-logo-lockup" aria-label="UNO Duel">
+          <span className="v8-logo-uno">UNO</span>
+          <span className="v8-logo-duel">DUEL</span>
         </div>
+        <p className="v8-home-tagline">Two players. One table.</p>
 
-        <div className="home-action-stack">
-          <button className="premium-primary-button create-room-premium" type="button" onClick={() => { playMenuSound('start'); onCreate() }} disabled={busy}>
-            <span className="button-copy"><small>START A NEW MATCH</small><strong>{busy ? 'Connecting…' : 'Create room'}</strong></span>
-            <span className="button-arrow"><AppIcon name="arrow" /></span>
+        <div className="v8-home-actions">
+          <button className="v8-play-button" type="button" onClick={() => { playMenuSound('start'); onCreate() }} disabled={busy}>
+            <span className="v8-play-button-copy">
+              <small>NEW GAME</small>
+              <strong>{busy ? 'Opening table…' : 'Create room'}</strong>
+            </span>
+            <span className="v8-play-button-arrow"><AppIcon name="arrow" size={22} /></span>
           </button>
 
-          <div className="premium-divider"><span>OR JOIN A FRIEND</span></div>
-
-          <form onSubmit={submitJoin} className="premium-join-card">
-            <div className="join-input-wrap">
-              <span className="join-label">ROOM CODE</span>
+          <form onSubmit={submitJoin} className="v8-join-panel">
+            <label htmlFor="room-code">JOIN A ROOM</label>
+            <div className="v8-code-row">
               <input
                 id="room-code"
-                className="premium-room-code-input"
                 value={roomCode}
                 onChange={(event) => setRoomCode(event.target.value.replace(/\D/g, '').slice(0, 4))}
                 placeholder="0000"
@@ -82,21 +72,19 @@ export default function HomeScreen({
                 disabled={busy}
                 aria-label="4-digit room code"
               />
+              <button type="submit" disabled={busy || roomCode.length !== 4} aria-label="Join room">
+                <AppIcon name="arrow" size={21} />
+              </button>
             </div>
-            <button className="premium-join-button" type="submit" disabled={busy || roomCode.length !== 4}>
-              <span>Join</span>
-              <AppIcon name="arrow" size={19} />
-            </button>
           </form>
         </div>
 
-        {error && <div className="error-banner premium-error" role="alert">{error}</div>}
+        {error && <div className="v8-error-toast" role="alert">{error}</div>}
 
-        <div className="premium-feature-row">
-          <span><i className="status-dot" /> LIVE FIREBASE</span>
-          <span>PRIVATE ROOMS</span>
-          <span>iPHONE READY</span>
-        </div>
+        <footer className="v8-home-footer">
+          <span><i /> Online</span>
+          <span>Private 1v1 rooms</span>
+        </footer>
       </section>
     </main>
   )
