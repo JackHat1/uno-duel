@@ -1,0 +1,32 @@
+UNO DUEL v6 — UI REFACTOR
+=========================
+
+Run locally:
+
+  npm install
+  npm run dev
+
+Firebase config is already included for the current project.
+
+IMPORTANT FIREBASE FEATURES
+- Authentication > Anonymous: enabled
+- Realtime Database: enabled
+- firebase.rules.json is included in this project
+
+WHAT CHANGED IN v6
+- Full UI stylesheet refactor: old v4/v5 override stack removed
+- Synchronized Firebase gameplay events for animations
+- Wild color picker redesigned
+- Full-screen color change animation visible to both players
+- +2 / +4 attack animation visible to sender and receiver
+- Wild +4 clearly shows the next selected color
+- Animated normal card plays and card draws
+- Skip / Reverse / UNO cinematic moments
+- Refined game board, hand dock, HUD, menus and sheets
+- iOS VisualViewport layout remains enabled
+- Existing room, profile, chat, scoring and game logic retained
+
+PUBLIC GITHUB NOTE
+Before publishing this repository publicly, tighten the Firebase Realtime
+Database security rules. The current development rules are intentionally
+simple while the game is still being iterated on.
